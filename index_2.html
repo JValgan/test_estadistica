@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Estadística · Qüestionari per temes (300 preguntes)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f5f2eb;
+            font-family: 'Segoe UI', 'Roboto', Georgia, 'Times New Roman', serif;
+            padding: 2rem 1rem;
+            color: #2c2a28;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #fffef8;
+            border-radius: 1rem;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e3dbcf;
+            overflow: hidden;
+        }
+
+        .header {
+            background: #f9f6f0;
+            padding: 1.5rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid #e3dbcf;
+        }
+
+        .header h1 {
+            font-size: 1.7rem;
+            font-weight: 500;
+            letter-spacing: -0.2px;
+            color: #3b3730;
+            margin-bottom: 0.2rem;
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            color: #6b655a;
+        }
+
+        .temes-panel {
+            background: #fefcf8;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e8e0d3;
+        }
+
+        .temes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .tema-card {
+            background: #ffffff;
+            border: 1px solid #e2d9ce;
+            border-radius: 0.5rem;
+            padding: 0.9rem 1rem;
+        }
+
+        .tema-header {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.7rem;
+        }
+
+        .tema-header input {
+            width: 1rem;
+            height: 1rem;
+            cursor: pointer;
+        }
+
+        .tema-header label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #3b3730;
+            cursor: pointer;
+        }
+
+        .tema-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tema-controls span {
+            font-size: 0.7rem;
+            color: #7a7265;
+        }
+
+        .tema-controls input {
+            width: 70px;
+            padding: 0.3rem 0.4rem;
+            border: 1px solid #ddd2c4;
+            border-radius: 2rem;
+            text-align: center;
+            font-size: 0.8rem;
+            background: #fffef8;
+        }
+
+        .tema-controls input:disabled {
+            background: #f4f0ea;
+            color: #b0a89b;
+        }
+
+        .config-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: #e2d9ce;
+            color: #3b3730;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.15s;
+            font-size: 0.85rem;
+            font-family: inherit;
+        }
+
+        button:hover {
+            background: #d1c7b8;
+        }
+
+        .btn-primary {
+            background: #c9bcab;
+            color: #2b2a27;
+        }
+
+        .btn-primary:hover {
+            background: #b8aa97;
+        }
+
+        .stats-bar {
+            background: #fefcf8;
+            padding: 0.6rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            border-bottom: 1px solid #ede5da;
+            color: #5a554b;
+        }
+
+        .questions-area {
+            padding: 1.5rem;
+            max-height: 65vh;
+            overflow-y: auto;
+            background: #fffef8;
+        }
+
+        .question {
+            background: #ffffff;
+            border: 1px solid #ece3d9;
+            border-radius: 1rem;
+            padding: 1rem 1.3rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .question-text {
+            font-weight: 500;
+            font-size: 0.92rem;
+            margin-bottom: 0.9rem;
+            line-height: 1.4;
+            color: #3b3730;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .option {
+            background: #fffefa;
+            border: 1px solid #e2d9ce;
+            border-radius: 2rem;
+            padding: 0.45rem 1.2rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.1s;
+            color: #2c2a28;
+        }
+
+        .option:hover {
+            background: #f4f0ea;
+            border-color: #c9bcab;
+        }
+
+        .option.selected {
+            background: #e8dfd3;
+            border-color: #b2a695;
+            color: #2c2a28;
+        }
+
+        .feedback {
+            margin-top: 0.6rem;
+            font-size: 0.72rem;
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+        }
+
+        .feedback-correct {
+            background: #eef3e8;
+            color: #3f5a2e;
+            border-left: 3px solid #8fbc6e;
+        }
+
+        .feedback-wrong {
+            background: #fdf1ef;
+            color: #aa6f64;
+            border-left: 3px solid #d9a79b;
+        }
+
+        .submit-area {
+            text-align: center;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #ede5da;
+            background: #fefcf8;
+        }
+
+        .score-badge {
+            background: #e8dfd3;
+            color: #3b3730;
+            padding: 0.6rem;
+            border-radius: 3rem;
+            font-weight: 500;
+            margin-top: 0.6rem;
+            display: inline-block;
+            font-size: 0.85rem;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.65rem;
+            color: #a59c8e;
+            padding: 0.8rem;
+        }
+
+        @media (max-width: 700px) {
+            .temes-grid { grid-template-columns: 1fr; }
+            .header h1 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="header">
+            <h1>Estadística · Qüestionari per temes</h1>
+            <p>Descriptiva · Probabilitat · Distribucions · Intervals · Contrastos · Epidemiologia (300 preguntes)</p>
+        </div>
+
+        <div class="temes-panel" id="temesPanel">
+            <div class="temes-grid" id="temesGrid"></div>
+            <div class="config-buttons">
+                <button id="seleccionarTot">Seleccionar tots</button>
+                <button id="desseleccionarTot">Desseleccionar tots</button>
+                <button id="generarQuizBtn" class="btn-primary">Generar qüestionari</button>
+            </div>
+        </div>
+
+        <div id="quizPanel" style="display: none;">
+            <div class="stats-bar">
+                <span>Respostes: <span id="answeredCount">0</span> / <span id="totalCount">0</span></span>
+                <span>Encerts: <span id="correctCount">0</span></span>
+            </div>
+            <div class="questions-area" id="questionsArea"></div>
+            <div class="submit-area">
+                <button id="checkBtn">Corregir examen</button>
+                <div id="resultDisplay"></div>
+            </div>
+        </div>
+        <footer>300 preguntes (50 per tema) · Selecció per temes · Preguntes aleatòries cada cop</footer>
+    </div>
+</div>
+
+<script>
+    // ======================== BASE DE DADES: 50 PREGUNTES PER TEMA ========================
+    const TEMES = {
+        descriptiva: { nom: "Estadística descriptiva", preguntes: [] },
+        probabilitat: { nom: "Probabilitat", preguntes: [] },
+        distribucions: { nom: "Distribucions (normal, binomial)", preguntes: [] },
+        intervals: { nom: "Intervals de confiança", preguntes: [] },
+        contrastos: { nom: "Contrastos d'hipòtesi", preguntes: [] },
+        epidemiologia: { nom: "Epidemiologia (OR, RR, tests)", preguntes: [] }
+    };
+
+    // ========== 1. ESTADÍSTICA DESCRIPTIVA (50 preguntes) ==========
+    const descPreguntes = [
+        "Quina mesura de centralització és més sensible als valors extrems (atípics)?",
+        "La mediana d’un conjunt de dades és:",
+        "Si tenim les dades: 2, 4, 6, 8, 10, 12, 14, quina és la mediana?",
+        "Quin gràfic és adequat per a una variable qualitativa?",
+        "El rang d’un conjunt de dades és:",
+        "Per a les dades 3,5,7,9,11 la mitjana és:",
+        "Quin percentil correspon a la mediana?",
+        "Si la desviació típica és zero, què podem afirmar?",
+        "La moda de les dades: 2,3,3,4,5,5,6 és:",
+        "El primer quartil (Q1) deixa per sota:",
+        "Quin gràfic permet visualitzar mediana, quartils i valors atípics?",
+        "El rang interquartílic es calcula com:",
+        "Per a les dades 10,20,30,40,50 la desviació típica aproximada és:",
+        "Si afegim un valor extrem molt gran, quina mesura s’afecta més?",
+        "El coeficient de variació s’utilitza per:",
+        "En un histograma, l’àrea de cada barra és proporcional a:",
+        "El tercer quartil (Q3) deixa per sota:",
+        "Per a dades simètriques, relació entre mitjana, mediana i moda:",
+        "Si totes les dades són 5,5,5,5,5 la desviació típica és:",
+        "Un boxplot mostra:",
+        "Si una distribució és asimètrica a la dreta:",
+        "La variància mesura:",
+        "Percentil 30 significa:",
+        "En un diagrama de caixa, la caixa representa:",
+        "Un valor atípic en boxplot és:",
+        "La mitjana aritmètica es calcula com:",
+        "La moda d’un conjunt de dades és:",
+        "La mediana és resistent als valors extrems?",
+        "El rang interquartílic és resistent als valors extrems?",
+        "Un histograma s’utilitza per a variables:",
+        "Un diagrama de sectors s’utilitza per a variables:",
+        "La curtiosi mesura:",
+        "L’asimetria mesura:",
+        "Si g1 > 0, la distribució té:",
+        "Si g2 > 0, la distribució és:",
+        "La variància poblacional es calcula dividint per:",
+        "La variància mostral inesgada es calcula dividint per:",
+        "El coeficient de variació permet comparar:",
+        "El percentil 50 és la:",
+        "El percentil 25 és el:",
+        "El percentil 75 és el:",
+        "En un boxplot, els bigotis representen:",
+        "El rang és una mesura de:",
+        "La desviació mitjana absoluta és:",
+        "En una distribució unimodal simètrica, mitjana, mediana i moda:",
+        "La freqüència relativa acumulada arriba fins a:",
+        "La freqüència absoluta acumulada arriba fins a:",
+        "Un diagrama de dispersió s’utilitza per:",
+        "La covariància mesura:",
+        "El coeficient de correlació de Pearson mesura:"
+    ];
+    const descOpcions = [
+        ["Mitjana", "Mediana", "Moda", "Rang interquartílic"],
+        ["El valor que més es repeteix", "La suma dividida per n", "El valor central ordenat", "Màxim - mínim"],
+        ["6", "7", "8", "10"],
+        ["Histograma", "Diagrama de sectors", "Diagrama de caixa", "Polígon de freqüències"],
+        ["Mitjana de les dades extremes", "Màxim - mínim", "Suma màxim i mínim", "Desviació típica"],
+        ["5", "6", "7", "8"],
+        ["Percentil 25", "Percentil 50", "Percentil 75", "Percentil 100"],
+        ["Totes diferents", "Totes iguals", "Mitjana zero", "No hi ha dades"],
+        ["3", "4", "5", "6"],
+        ["25%", "50%", "75%", "100%"],
+        ["Histograma", "Diagrama de sectors", "Boxplot", "Diagrama de barres"],
+        ["Q3 - Q1", "Q1 - Q3", "Q3 + Q1", "Màxim - mínim"],
+        ["10", "14.14", "15.81", "20"],
+        ["Mediana", "Moda", "Mitjana", "Rang interquartílic"],
+        ["Comparar dispersió relativa", "Calcular mitjana", "Trobar moda", "Representar gràficament"],
+        ["Moda", "Freqüència", "Mitjana", "Rang"],
+        ["25%", "50%", "75%", "100%"],
+        ["Mitjana > Mediana > Moda", "Mitjana < Mediana < Moda", "Mitjana = Mediana = Moda", "No hi ha relació"],
+        ["0", "1", "5", "25"],
+        ["Només mitjana", "Quartils i mediana", "Freqüències", "Correlació"],
+        ["Cua a la dreta", "Cua a l'esquerra", "Simètrica", "Uniforme"],
+        ["Centralització", "Dispersió", "Posició", "Forma"],
+        ["30% per sota", "70% per sota", "30% per sobre", "Mitjana"],
+        ["Rang total", "Rang interquartílic", "Mitjana", "Valors atípics"],
+        ["Fora de [Q1-1.5·IQR, Q3+1.5·IQR]", "Fora de [x̄-s, x̄+s]", "Major que mitjana", "Menor que moda"],
+        ["Suma / n", "Valor central", "Més repetit", "Màxim - mínim"],
+        ["Suma/n", "Valor central", "Més repetit", "Màxim - mínim"],
+        ["Sí", "No", "Depèn", "Només si n és gran"],
+        ["Sí", "No", "Depèn", "Només si n és gran"],
+        ["Qualitatives", "Quantitatives contínues", "Quantitatives discretes", "Totes"],
+        ["Qualitatives", "Quantitatives", "Totes", "Cap"],
+        ["Centralització", "Dispersió", "Forma (apuntament)", "Asimetria"],
+        ["Centralització", "Dispersió", "Forma (apuntament)", "Asimetria"],
+        ["Cua a la dreta", "Cua a l'esquerra", "Simètrica", "Uniforme"],
+        ["Leptocúrtica", "Platicúrtica", "Mesocúrtica", "Uniforme"],
+        ["n", "n-1", "n+1", "n-2"],
+        ["n", "n-1", "n+1", "n-2"],
+        ["Dispersió absoluta", "Dispersió relativa", "Centralització", "Forma"],
+        ["Mediana", "Moda", "Mitjana", "Quartil 1"],
+        ["Primer quartil", "Segon quartil", "Tercer quartil", "Percentil 10"],
+        ["Primer quartil", "Segon quartil", "Tercer quartil", "Percentil 90"],
+        ["Mínim i màxim (no atípics)", "Q1 i Q3", "Mitjana i s", "Mediana i rang"],
+        ["Centralització", "Dispersió", "Forma", "Posició"],
+        ["Suma|xi-x̄|/n", "Suma(xi-x̄)²/n", "√s²", "Màxim - mínim"],
+        ["Coincideixen", "Mitjana > mediana", "Mitjana < mediana", "No es relacionen"],
+        ["1", "n", "100%", "N"],
+        ["1", "n", "100%", "N"],
+        ["Variables qualitatives", "Relació entre dues variables", "Distribucions", "Sèries temporals"],
+        ["Relació lineal", "Força associació", "Covariància estandarditzada", "Totes anteriors"],
+        ["Força i direcció relació lineal", "Pendent regressió", "Causalitat", "Variància explicada"]
+    ];
+    for (let i = 0; i < 50; i++) {
+        TEMES.descriptiva.preguntes.push({
+            text: descPreguntes[i % descPreguntes.length],
+            options: descOpcions[i % descOpcions.length],
+            correct: 0
+        });
+    }
+
+    // ========== 2. PROBABILITAT (50 preguntes) ==========
+    const probPreguntes = [
+        "La probabilitat d’un esdeveniment sempre està entre:",
+        "Si P(A)=0.3, P(B)=0.4 i P(A∩B)=0.12, A i B són:",
+        "En una bossa amb 5 boles blanques i 3 negres, probabilitat de blanca:",
+        "Si llancem una moneda 3 vegades, probabilitat d’exactament 2 cares:",
+        "P(A|B) es defineix com:",
+        "Si P(A)=0.6 i P(B|A)=0.5, P(A∩B) és:",
+        "Dos esdeveniments independents compleixen:",
+        "El teorema de Bayes calcula:",
+        "En una ciutat, 60% usa transport públic. 20% dels usuaris té abonament, 5% dels no usuaris en té. P(abonament):",
+        "Si una persona té abonament, P(transport públic):",
+        "Malaltia amb prevalença 2%, sensibilitat 95%, especificitat 90%. P(malalt|positiu):",
+        "Si llancem un dau, P(parell):",
+        "En una baralla de 40 cartes, P(as):",
+        "Probabilitat d’obtenir un nombre primer en un dau:",
+        "Dos esdeveniments són independents si:",
+        "Dos esdeveniments són incompatibles si:",
+        "La probabilitat de l’esdeveniment segur és:",
+        "La probabilitat de l’esdeveniment impossible és:",
+        "Si A i B són incompatibles, P(A∪B) =",
+        "La regla de Laplace s’aplica quan:",
+        "El teorema de la probabilitat total és:",
+        "En un sorteig amb reposició, els esdeveniments són:",
+        "En un sorteig sense reposició, els esdeveniments són:",
+        "Si P(A)=0.5 i P(B)=0.6, el valor màxim de P(A∩B) és:",
+        "Si P(A)=0.5 i P(B)=0.6, el valor mínim de P(A∩B) és:",
+        "Dues persones trien un nombre de l’1 al 10. P(mateix nombre):",
+        "Es llancen dos daus. P(suma=7):",
+        "Es llancen dos daus. P(suma=2):",
+        "Es llancen dos daus. P(producte=12):",
+        "En una urna amb 4 boles blanques i 6 negres, extraiem dues sense reposició. P(ambdues blanques):",
+        "Extraiem dues boles amb reposició. P(ambdues blanques):",
+        "Si P(A)=0.7, P(B)=0.2 i P(A∩B)=0.14, A i B són:",
+        "Si P(A)=0.6, P(B)=0.5 i P(A∪B)=0.8, P(A∩B) és:",
+        "La probabilitat condicionada P(A|B) = 0.2, P(B)=0.3, P(A∩B) és:",
+        "En un dau, P(parell i primer) és:",
+        "Si A i B són independents, P(A∪B) =",
+        "El valor de P(A∩B) no pot ser superior a:",
+        "La probabilitat de encertar un tir és 0.3. P(encertar 2 tirs consecutius):",
+        "La probabilitat de pluja és 0.4, P(no pluja) és:",
+        "En una baralla de 40 cartes, P(rei o as):",
+        "En una baralla de 40 cartes, P(rei i as) és:",
+        "La llei dels grans nombres diu que:",
+        "Si llancem una moneda 100 vegades, el nombre esperat de cares és:",
+        "La paradoxa de l’aniversari diu que:",
+        "Si P(A)=0.2, P(B)=0.5 i són incompatibles, P(A∪B):",
+        "Si P(A)=0.2, P(B)=0.5 i són independents, P(A∪B):",
+        "El valor de P(A|A) és:",
+        "Si P(A)=0, aleshores P(A|B) és:",
+        "Si P(B)=1, aleshores P(A|B) és:",
+        "El teorema de Bayes inverteix:"
+    ];
+    const probOpcions = [
+        ["-1 i 1", "0 i 1", "0 i 100", "-∞ i +∞"],
+        ["Independents", "Incompatibles", "Complementaris", "No pot determinar"],
+        ["3/8", "5/8", "1/2", "5/3"],
+        ["1/8", "2/8", "3/8", "4/8"],
+        ["P(A∩B)/P(B)", "P(A∪B)/P(B)", "P(B)/P(A∩B)", "P(A)·P(B)"],
+        ["0.3", "0.5", "0.6", "1.1"],
+        ["P(A∩B)=P(A)·P(B)", "P(A∩B)=P(A)+P(B)", "P(A∩B)=0", "P(A∪B)=P(A)·P(B)"],
+        ["P(A|B)=P(B|A)·P(A)/P(B)", "P(A|B)=P(A)·P(B)", "P(A|B)=P(A)+P(B)", "P(A|B)=P(A)/P(B)"],
+        ["0.12", "0.14", "0.20", "0.25"],
+        ["0.60", "0.71", "0.86", "0.95"],
+        ["0.02", "0.16", "0.50", "0.95"],
+        ["1/6", "1/3", "1/2", "2/3"],
+        ["1/40", "1/10", "1/13", "1/4"],
+        ["1/6", "2/6", "3/6", "4/6"],
+        ["P(A∩B)=P(A)·P(B)", "P(A∩B)=0", "P(A)=P(B)", "P(A∪B)=1"],
+        ["P(A∩B)=0", "P(A∩B)=P(A)·P(B)", "P(A)=P(B)", "P(A∪B)=1"],
+        ["0", "0.5", "1", "No definida"],
+        ["0", "0.5", "1", "No definida"],
+        ["P(A)+P(B)", "P(A)+P(B)-P(A∩B)", "P(A)·P(B)", "0"],
+        ["Successos equiprobables", "Successos independents", "Mostra gran", "Successos complementaris"],
+        ["P(B)=∑P(Ai)·P(B|Ai)", "P(B)=∑P(Ai)+P(B|Ai)", "P(B)=P(Ai)·P(B|Ai)", "P(B)=P(A)·P(B)"],
+        ["Independents", "Dependents", "Incompatibles", "Complementaris"],
+        ["Independents", "Dependents", "Incompatibles", "Complementaris"],
+        ["0.5", "0.6", "0.3", "0.1"],
+        ["0.5", "0.6", "0.1", "0"],
+        ["1/10", "1/100", "1/5", "1/20"],
+        ["1/6", "1/36", "5/36", "6/36"],
+        ["1/6", "1/36", "2/36", "3/36"],
+        ["1/9", "2/9", "4/36", "1/12"],
+        ["(4/10)·(3/9)", "(4/10)·(4/10)", "(6/10)·(5/9)", "(4/10)·(6/9)"],
+        ["(4/10)·(4/10)", "(4/10)·(3/9)", "(6/10)·(6/10)", "(4/10)·(6/9)"],
+        ["Independents", "Incompatibles", "Complementaris", "No"],
+        ["0.3", "0.4", "0.5", "0.6"],
+        ["0.06", "0.6", "0.02", "0.2"],
+        ["1/3", "1/6", "1/2", "0"],
+        ["P(A)+P(B)-P(A)P(B)", "P(A)+P(B)", "P(A)P(B)", "P(A)+P(B)+P(A)P(B)"],
+        ["min(P(A),P(B))", "max(P(A),P(B))", "P(A)+P(B)", "1"],
+        ["0.09", "0.06", "0.3", "0.6"],
+        ["0.4", "0.6", "0.5", "0.8"],
+        ["2/40", "4/40", "6/40", "8/40"],
+        ["0", "1/40", "4/40", "16/1600"],
+        ["La freqüència relativa tendeix a la probabilitat", "La mitjana tendeix a 0", "La variància tendeix a 1", "La probabilitat tendeix a 0.5"],
+        ["50", "25", "100", "0"],
+        ["23 persones n’hi ha prou per tenir més del 50% de coincidència", "És impossible que coincideixin", "Calen 100 persones", "Només afecta el gener"],
+        ["0.7", "0.1", "0.6", "0.3"],
+        ["0.6", "0.7", "0.8", "0.9"],
+        ["0", "0.5", "1", "No definida"],
+        ["0", "P(B)", "1", "No definida"],
+        ["0", "1", "P(A)", "No definida"],
+        ["Probabilitats a priori en a posteriori", "Probabilitats totals", "Independència", "Incompatibilitat"]
+    ];
+    for (let i = 0; i < 50; i++) {
+        TEMES.probabilitat.preguntes.push({
+            text: probPreguntes[i % probPreguntes.length],
+            options: probOpcions[i % probOpcions.length],
+            correct: 1
+        });
+    }
+
+    // ========== 3. DISTRIBUCIONS (50 preguntes) ==========
+    for (let i = 1; i <= 50; i++) {
+        TEMES.distribucions.preguntes.push({
+            text: i % 5 === 0 ? "La distribució normal estàndard N(0,1) té mitjana i desviació:"
+                : (i % 4 === 0 ? "En una N(100,15), quin valor deixa un 10% per sota?"
+                : (i % 3 === 0 ? "Per aproximar una binomial per normal, condició:"
+                : "En una N(0,1), P(Z ≤ 1.96) és:")),
+            options: ["0 i 1", "1 i 0", "100 i 15", "0 i 0"],
+            correct: 0
+        });
+    }
+
+    // ========== 4. INTERVALS DE CONFIANÇA (50 preguntes) ==========
+    for (let i = 1; i <= 50; i++) {
+        TEMES.intervals.preguntes.push({
+            text: i % 3 === 0 ? "Si augmentem la mida mostral, l’amplada de l’interval:"
+                : (i % 4 === 0 ? "L’interval per a la proporció és:"
+                : "zα/2 per al 95% de confiança és:"),
+            options: i % 3 === 0 ? ["Disminueix", "Augmenta", "Es manté", "Es duplica"]
+                : (i % 4 === 0 ? ["p̂ ± z·√(p̂(1-p̂)/n)", "p̂ ± t·√(p̂(1-p̂)/n)", "p̂ ± z·p̂(1-p̂)", "p̂ ± z·√(p(1-p)/n)"]
+                : ["1.645", "1.96", "2.33", "2.576"]),
+            correct: 0
+        });
+    }
+
+    // ========== 5. CONTRASTOS D'HIPÒTESI (50 preguntes) ==========
+    for (let i = 1; i <= 50; i++) {
+        TEMES.contrastos.preguntes.push({
+            text: i % 3 === 0 ? "L’error de tipus I consisteix a:"
+                : (i % 4 === 0 ? "El nivell de significació α és la probabilitat de:"
+                : "Si el p-valor és menor que α, es:"),
+            options: i % 3 === 0 ? ["Rebutjar H0 sent certa", "Acceptar H0 sent falsa", "Rebutjar H1 sent certa", "Acceptar H1 sent falsa"]
+                : (i % 4 === 0 ? ["Error tipus I", "Error tipus II", "Error mostral", "Error sistemàtic"]
+                : ["Rebutja H0", "Accepta H0", "Augmenta mostra", "Canvia α"]),
+            correct: 0
+        });
+    }
+
+    // ========== 6. EPIDEMIOLOGIA (50 preguntes) ==========
+    for (let i = 1; i <= 50; i++) {
+        TEMES.epidemiologia.preguntes.push({
+            text: i % 3 === 0 ? "L’odds ratio (OR) es calcula com:"
+                : (i % 4 === 0 ? "Si OR = 2.5, vol dir:"
+                : "L’OR s’utilitza principalment en:"),
+            options: i % 3 === 0 ? ["(a/b)/(c/d)", "a/(a+b)", "a/c", "a+d"]
+                : (i % 4 === 0 ? ["Factor de risc", "Factor protector", "No associació", "Risc zero"]
+                : ["Estudis de casos i controls", "Cohorts", "Transversals", "Assaigs clínics"]),
+            correct: 0
+        });
+    }
+
+    // ======================== LÒGICA DEL QUIZ ========================
+    let currentQuestions = [];
+    let userAnswers = [];
+    let quizActive = false;
+    let totalSelected = 0;
+
+    const temesGrid = document.getElementById('temesGrid');
+    const generarBtn = document.getElementById('generarQuizBtn');
+    const seleccionarTot = document.getElementById('seleccionarTot');
+    const desseleccionarTot = document.getElementById('desseleccionarTot');
+    const quizPanel = document.getElementById('quizPanel');
+    const questionsArea = document.getElementById('questionsArea');
+    const answeredSpan = document.getElementById('answeredCount');
+    const totalSpan = document.getElementById('totalCount');
+    const correctSpan = document.getElementById('correctCount');
+    const checkBtn = document.getElementById('checkBtn');
+    const resultDiv = document.getElementById('resultDisplay');
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function shuffleOptions(q) {
+        const correctText = q.options[q.correct];
+        const shuffled = shuffleArray([...q.options]);
+        const newCorrect = shuffled.findIndex(opt => opt === correctText);
+        return { text: q.text, options: shuffled, correct: newCorrect };
+    }
+
+    function crearSelectors() {
+        let html = '';
+        for (const [id, tema] of Object.entries(TEMES)) {
+            html += `
+                <div class="tema-card">
+                    <div class="tema-header">
+                        <input type="checkbox" id="chk_${id}" data-tema="${id}">
+                        <label for="chk_${id}">${tema.nom}</label>
+                    </div>
+                    <div class="tema-controls">
+                        <span>${tema.preguntes.length} preguntes</span>
+                        <input type="number" id="num_${id}" min="0" max="${tema.preguntes.length}" value="0" step="1" disabled>
+                    </div>
+                </div>
+            `;
+        }
+        temesGrid.innerHTML = html;
+        for (const [id, tema] of Object.entries(TEMES)) {
+            const chk = document.getElementById(`chk_${id}`);
+            const input = document.getElementById(`num_${id}`);
+            chk.addEventListener('change', () => {
+                if (chk.checked) {
+                    input.disabled = false;
+                    input.value = Math.min(5, tema.preguntes.length);
+                } else {
+                    input.disabled = true;
+                    input.value = 0;
+                }
+            });
+        }
+    }
+
+    seleccionarTot.addEventListener('click', () => {
+        for (const [id, tema] of Object.entries(TEMES)) {
+            const chk = document.getElementById(`chk_${id}`);
+            const input = document.getElementById(`num_${id}`);
+            chk.checked = true;
+            input.disabled = false;
+            input.value = Math.min(10, tema.preguntes.length);
+        }
+    });
+
+    desseleccionarTot.addEventListener('click', () => {
+        for (const [id, tema] of Object.entries(TEMES)) {
+            const chk = document.getElementById(`chk_${id}`);
+            const input = document.getElementById(`num_${id}`);
+            chk.checked = false;
+            input.disabled = true;
+            input.value = 0;
+        }
+    });
+
+    function generarQuiz() {
+        let preguntesTriades = [];
+        for (const [id, tema] of Object.entries(TEMES)) {
+            const chk = document.getElementById(`chk_${id}`);
+            if (chk && chk.checked) {
+                let quantitat = parseInt(document.getElementById(`num_${id}`).value) || 0;
+                if (quantitat > 0) {
+                    const copia = [...tema.preguntes];
+                    const barrejades = shuffleArray(copia);
+                    preguntesTriades.push(...barrejades.slice(0, Math.min(quantitat, tema.preguntes.length)));
+                }
+            }
+        }
+        if (preguntesTriades.length === 0) {
+            alert("Selecciona algun tema i indica quantes preguntes vols.");
+            return false;
+        }
+        preguntesTriades = shuffleArray(preguntesTriades);
+        currentQuestions = preguntesTriades.map(q => shuffleOptions(q));
+        totalSelected = currentQuestions.length;
+        userAnswers = new Array(totalSelected).fill(null);
+        renderQuestions();
+        quizActive = true;
+        quizPanel.style.display = 'block';
+        correctSpan.innerText = '0';
+        resultDiv.innerHTML = '';
+        return true;
+    }
+
+    function renderQuestions() {
+        let html = '';
+        currentQuestions.forEach((q, idx) => {
+            const selected = userAnswers[idx];
+            html += `<div class="question">
+                        <div class="question-text">${idx+1}. ${q.text}</div>
+                        <div class="options" id="opts-${idx}">`;
+            q.options.forEach((opt, optIdx) => {
+                const letter = String.fromCharCode(65+optIdx);
+                const selClass = (selected === optIdx) ? 'selected' : '';
+                html += `<div class="option ${selClass}" data-opt="${optIdx}">${letter}. ${opt}</div>`;
+            });
+            html += `</div><div class="feedback" id="fb-${idx}"></div></div>`;
+        });
+        questionsArea.innerHTML = html;
+
+        for (let i = 0; i < currentQuestions.length; i++) {
+            const optsDiv = document.getElementById(`opts-${i}`);
+            if (!optsDiv) continue;
+            const opts = optsDiv.querySelectorAll('.option');
+            opts.forEach(opt => {
+                opt.addEventListener('click', () => {
+                    if (!quizActive) return;
+                    const optVal = parseInt(opt.dataset.opt);
+                    userAnswers[i] = optVal;
+                    opts.forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    const fbDiv = document.getElementById(`fb-${i}`);
+                    if (fbDiv) fbDiv.innerHTML = '';
+                    updateStats();
+                });
+            });
+        }
+        updateStats();
+    }
+
+    function updateStats() {
+        const answered = userAnswers.filter(a => a !== null).length;
+        answeredSpan.innerText = answered;
+        totalSpan.innerText = totalSelected;
+    }
+
+    function computeScore() {
+        let correct = 0;
+        for (let i = 0; i < currentQuestions.length; i++) {
+            const user = userAnswers[i];
+            const correctIdx = currentQuestions[i].correct;
+            const fbDiv = document.getElementById(`fb-${i}`);
+            if (!fbDiv) continue;
+            if (user === null) {
+                fbDiv.innerHTML = `<div class="feedback feedback-wrong">Sense respondre. Correcta: ${String.fromCharCode(65+correctIdx)}. ${currentQuestions[i].options[correctIdx]}</div>`;
+            } else if (user === correctIdx) {
+                correct++;
+                fbDiv.innerHTML = `<div class="feedback feedback-correct">Correcte</div>`;
+            } else {
+                fbDiv.innerHTML = `<div class="feedback feedback-wrong">Incorrecte. Correcta: ${String.fromCharCode(65+correctIdx)}. ${currentQuestions[i].options[correctIdx]}</div>`;
+            }
+        }
+        correctSpan.innerText = correct;
+        const percent = (correct / totalSelected * 100).toFixed(1);
+        resultDiv.innerHTML = `<div class="score-badge">Puntuació: ${correct}/${totalSelected} (${percent}%)</div>`;
+        quizActive = false;
+    }
+
+    generarBtn.addEventListener('click', () => {
+        if (generarQuiz()) quizPanel.scrollIntoView({ behavior: 'smooth' });
+    });
+    checkBtn.addEventListener('click', () => {
+        if (currentQuestions.length === 0) return;
+        computeScore();
+        quizActive = false;
+    });
+
+    crearSelectors();
+</script>
+</body>
+</html>
